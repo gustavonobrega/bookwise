@@ -16,16 +16,16 @@ export function Sidebar() {
       <Image src={logo} alt="Book wise logo" />
 
       <NavMenu>
-        <NavItem href="/" isActive={router.pathname === router.asPath}>
+        <NavItem href="/" isActive={router.asPath === '/'}>
           <ChartLineUp size={24} />
           <strong>Início</strong>
         </NavItem>
-        <NavItem href="/explore" isActive={router.pathname === router.asPath}>
+        <NavItem href="/explore" isActive={router.asPath === '/explore'}>
           <Binoculars size={24} />
           <strong>Explorar</strong>
         </NavItem>
         {isSignedIn && (
-          <NavItem href="/profile" isActive={router.pathname === router.asPath}>
+          <NavItem href="/profile" isActive={router.asPath === '/profile'}>
             <User size={24} />
             <strong>Perfil</strong>
           </NavItem>
