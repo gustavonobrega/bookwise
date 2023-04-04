@@ -1,6 +1,7 @@
 import { styled } from '@/styles/stitches.config'
 
 export const AvatarContainer = styled('div', {
+  width: 'fit-content',
   background: '$gradient-vertical',
   borderRadius: '999px',
   lineHeight: 0,
