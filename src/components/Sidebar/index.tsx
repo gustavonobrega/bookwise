@@ -1,15 +1,24 @@
 import Image from 'next/image'
 import { useRouter } from 'next/router'
+import { useSession } from 'next-auth/react'
 import { Binoculars, ChartLineUp, SignIn, SignOut, User } from 'phosphor-react'
 
 import logo from '../../assets/logo.svg'
 import { UserAvatar } from '../UserAvatar'
 
 import { NavItem, NavMenu, SidebarContainer, SignButton } from './styles'
+import { SidebarShimmer } from '../Shimmers/SidebarShimmer'
 
 export function Sidebar() {
-  const isSignedIn = true
   const router = useRouter()
+  const session = useSession()
+
+  const isLoading = session.status === 'loading'
+  const isSignedIn = session.status === 'authenticated'
+
+  if (isLoading) {
+    return <SidebarShimmer />
+  }
 
   return (
     <SidebarContainer>
@@ -40,11 +49,11 @@ export function Sidebar() {
       ) : (
         <SignButton isSigned={isSignedIn}>
           <UserAvatar
-            src="https://github.com/gustavonobrega.png"
-            alt=""
+            src={session.data.user.avatar_url}
+            alt={session.data.user.name}
             size="sm"
           />
-          Gustavo
+          {session.data.user.name}
           <SignOut size={20} />
         </SignButton>
       )}
