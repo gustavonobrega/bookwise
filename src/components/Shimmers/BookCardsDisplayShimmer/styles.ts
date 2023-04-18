@@ -3,6 +3,7 @@ import { styled } from '@/styles/stitches.config'
 export const BookCardsShimmerContainer = styled('div', {
   display: 'grid',
   gap: '0.75rem',
+  height: 'fit-content',
 
   variants: {
     templateCol: {
