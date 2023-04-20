@@ -5,7 +5,6 @@ import { LastRead } from './LastRead'
 import { RecentReviews } from './RecentReviews'
 import { TrendingBooks } from './TrendingBooks'
 import { RecentReviewsShimmer } from '@/components/Shimmers/RecentReviewsShimmer'
-import { BookCardShimmer } from '@/components/Shimmers/BookCardShimmer'
 import { BookCardsDisplayShimmer } from '@/components/Shimmers/BookCardsDisplayShimmer'
 
 import { HomeContainer, MyBooks } from './styles'
@@ -42,49 +41,57 @@ export default function Home() {
 
   const isSignedIn = session.status === 'authenticated'
 
-  const { data: ratings } = useQuery<Rating[]>(['ratings'], async () => {
-    const response = await api.get('/ratings')
-
-    const data = response.data.map((rating: Rating) => {
-      return {
-        id: rating.id,
-        rate: rating.rate,
-        created_at: formatTimeFromNow(rating.created_at),
-        book: {
-          name: rating.book.name,
-          author: rating.book.author,
-          summary: rating.book.summary,
-          cover_url: rating.book.cover_url,
-        },
-        user: {
-          name: rating.user.name,
-          avatar_url: rating.user.avatar_url,
-        },
-      }
-    })
-
-    return data
-  })
-
-  const { data: popularBooks } = useQuery<PopularBook[]>(
-    ['popular'],
+  const { data: ratings, isLoading: isRatingsLoading } = useQuery<Rating[]>(
+    ['ratings'],
     async () => {
-      const response = await api.get('/books/popular')
+      const response = await api.get('/ratings')
 
-      return response.data
+      const data = response.data.map((rating: Rating) => {
+        return {
+          id: rating.id,
+          rate: rating.rate,
+          created_at: formatTimeFromNow(rating.created_at),
+          book: {
+            name: rating.book.name,
+            author: rating.book.author,
+            summary: rating.book.summary,
+            cover_url: rating.book.cover_url,
+          },
+          user: {
+            name: rating.user.name,
+            avatar_url: rating.user.avatar_url,
+          },
+        }
+      })
+
+      return data
     },
   )
+
+  const { data: popularBooks, isLoading: isPopularLoading } = useQuery<
+    PopularBook[]
+  >(['popular'], async () => {
+    const response = await api.get('/books/popular')
+
+    return response.data
+  })
 
   return (
     <HomeContainer>
       <MyBooks>
-        {isSignedIn && <LastRead />}
-        <RecentReviews ratings={ratings} />
-        {/* <RecentReviewsShimmer /> */}
+        {isSignedIn && !isRatingsLoading && <LastRead />}
+        {isRatingsLoading ? (
+          <RecentReviewsShimmer />
+        ) : (
+          <RecentReviews ratings={ratings} />
+        )}
       </MyBooks>
 
-      <TrendingBooks popularBooks={popularBooks} />
-      {/* <BookCardsDisplayShimmer /> */}
+      {isPopularLoading ? (
+        <BookCardsDisplayShimmer />
+      ) : (
+        <TrendingBooks popularBooks={popularBooks} />
+      )}
     </HomeContainer>
   )
 }
