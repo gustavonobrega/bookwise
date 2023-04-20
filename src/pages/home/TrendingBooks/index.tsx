@@ -6,8 +6,13 @@ import {
   TrendingBooksContent,
   TrendingBooksHeader,
 } from './styles'
+import { PopularBook } from '..'
 
-export function TrendingBooks() {
+interface TrendingBooksProps {
+  popularBooks?: PopularBook[]
+}
+
+export function TrendingBooks({ popularBooks }: TrendingBooksProps) {
   return (
     <TrendingBooksContainer>
       <TrendingBooksHeader>
@@ -18,7 +23,9 @@ export function TrendingBooks() {
       </TrendingBooksHeader>
 
       <TrendingBooksContent>
-        <BookCard size="sm" />
+        {popularBooks?.map((popular) => (
+          <BookCard size="sm" key={popular.id} popularBook={popular} />
+        ))}
       </TrendingBooksContent>
     </TrendingBooksContainer>
   )

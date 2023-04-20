@@ -15,4 +15,8 @@ export const TrendingBooksHeader = styled('div', {
 
 export const TrendingBooksContent = styled('div', {
   marginTop: '1rem',
+
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '$3',
 })

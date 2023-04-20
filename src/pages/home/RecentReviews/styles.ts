@@ -60,8 +60,6 @@ export const ReviewCardContent = styled('div', {
   overflow: 'hidden',
 
   img: {
-    width: '6.75rem',
-    height: '9.5rem',
     objectFit: 'cover',
     borderRadius: '$sm',
   },
