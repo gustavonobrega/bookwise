@@ -1,3 +1,5 @@
+import '../lib/dayjs'
+
 import type { AppProps } from 'next/app'
 import { useRouter } from 'next/router'
 import { SessionProvider } from 'next-auth/react'
@@ -5,6 +7,8 @@ import { Nunito } from 'next/font/google'
 
 import { globalStyles } from '@/styles/global'
 import DefaultLayout from '@/layouts/DefaultLayout'
+import { QueryClientProvider } from '@tanstack/react-query'
+import { queryClient } from '@/lib/react-query'
 
 const nunito = Nunito({ subsets: ['latin'] })
 
@@ -18,19 +22,23 @@ export default function App({
 
   if (router.pathname === '/login') {
     return (
-      <div className={nunito.className}>
+      <QueryClientProvider client={queryClient}>
         <SessionProvider session={session}>
-          <Component {...pageProps} />
+          <div className={nunito.className}>
+            <Component {...pageProps} />
+          </div>
         </SessionProvider>
-      </div>
+      </QueryClientProvider>
     )
   }
 
   return (
-    <DefaultLayout className={nunito.className}>
+    <QueryClientProvider client={queryClient}>
       <SessionProvider session={session}>
-        <Component {...pageProps} />
+        <DefaultLayout className={nunito.className}>
+          <Component {...pageProps} />
+        </DefaultLayout>
       </SessionProvider>
-    </DefaultLayout>
+    </QueryClientProvider>
   )
 }
