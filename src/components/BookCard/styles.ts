@@ -29,39 +29,6 @@ export const BookCardContainer = styled('div', {
     fontSize: '$sm',
     color: '$gray300',
   },
-
-  variants: {
-    size: {
-      sm: {
-        '> div': {
-          img: {
-            width: '4rem',
-            height: '5.875rem',
-          },
-        },
-      },
-      md: {
-        '> div': {
-          img: {
-            width: '6.125rem',
-            height: '8.375rem',
-          },
-        },
-      },
-      lg: {
-        '> div': {
-          img: {
-            width: '6.75rem',
-            height: '9.5rem',
-          },
-        },
-      },
-    },
-  },
-
-  defaultVariants: {
-    size: 'sm',
-  },
 })
 
 export const BookInfo = styled('div', {
@@ -79,5 +46,18 @@ export const BookInfo = styled('div', {
 
   '> div': {
     marginTop: 'auto',
+  },
+
+  variants: {
+    isSmall: {
+      true: {
+        strong: {
+          display: '-webkit-box',
+          '-webkit-line-clamp': 2,
+          '-webkit-box-orient': 'vertical',
+          overflow: 'hidden',
+        },
+      },
+    },
   },
 })
