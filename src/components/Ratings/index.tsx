@@ -7,8 +7,10 @@ interface RatingsProps {
 }
 
 export function Ratings({ size, rate }: RatingsProps) {
+  const roundedRate = Math.round(rate)
+
   const stars = Array.from({ length: 5 }, (_, i) =>
-    i + 1 <= rate ? 'fill' : 'regular',
+    i + 1 <= roundedRate ? 'fill' : 'regular',
   )
 
   return (
