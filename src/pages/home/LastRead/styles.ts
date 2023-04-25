@@ -35,8 +35,6 @@ export const LastReadCard = styled('div', {
   },
 
   img: {
-    width: '6.75rem',
-    height: '9.5rem',
     objectFit: 'cover',
     borderRadius: '$sm',
   },

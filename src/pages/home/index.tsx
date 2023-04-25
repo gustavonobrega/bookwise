@@ -36,10 +36,23 @@ export interface PopularBook {
   rate: number
 }
 
+export interface LastReadBook {
+  id: string
+  rate: number
+  created_at: string
+  book: {
+    name: string
+    author: string
+    summary: string
+    cover_url: string
+  }
+}
+
 export default function Home() {
   const session = useSession()
 
   const isSignedIn = session.status === 'authenticated'
+  const userId = session.data?.user.id
 
   const { data: ratings, isLoading: isRatingsLoading } = useQuery<Rating[]>(
     ['ratings'],
@@ -76,10 +89,24 @@ export default function Home() {
     return response.data
   })
 
+  const { data: lastRead, isLoading: isLastReadLoading } =
+    useQuery<LastReadBook>(['last-read', userId], async () => {
+      const response = await api.get(`/profile/${userId}`)
+
+      const book = {
+        ...response.data.ratings[0],
+        created_at: formatTimeFromNow(response.data.ratings[0].created_at),
+      }
+
+      return book
+    })
+
   return (
     <HomeContainer>
       <MyBooks>
-        {isSignedIn && !isRatingsLoading && <LastRead />}
+        {isSignedIn && !isLastReadLoading && lastRead && (
+          <LastRead lastRead={lastRead} />
+        )}
         {isRatingsLoading ? (
           <RecentReviewsShimmer />
         ) : (

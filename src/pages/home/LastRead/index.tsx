@@ -10,8 +10,14 @@ import {
   LastReadHeader,
   MainInfo,
 } from './styles'
+import { LastReadBook } from '..'
+import Image from 'next/image'
 
-export function LastRead() {
+interface LastReadProps {
+  lastRead?: LastReadBook
+}
+
+export function LastRead({ lastRead }: LastReadProps) {
   return (
     <LastReadContainer>
       <LastReadHeader>
@@ -22,24 +28,24 @@ export function LastRead() {
       </LastReadHeader>
 
       <LastReadCard>
-        <img src="https://github.com/gustavonobrega.png" alt="" />
+        <Image
+          src={lastRead!.book.cover_url}
+          alt={lastRead!.book.name}
+          width={108}
+          height={152}
+        />
 
         <LastReadBookDetails>
           <LastReadCardHeader>
-            <span>Há 2 dias</span>
-            <Ratings size={16} />
+            <span>{lastRead?.created_at}</span>
+            <Ratings size={16} rate={lastRead!.rate} />
           </LastReadCardHeader>
 
           <MainInfo>
-            <strong>Entendendo Algoritmos</strong>
-            <span>Aditya Bhargava</span>
+            <strong>{lastRead?.book.name}</strong>
+            <span>{lastRead?.book.author}</span>
 
-            <p>
-              Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ducimus
-              quas pariatur inventore modi aliquam quo dicta molestiae harum eos
-              soluta nostrum expedita sunt optio, perferendis fugit animi
-              consequatur perspiciatis similique?
-            </p>
+            <p>{lastRead?.book.summary}</p>
           </MainInfo>
         </LastReadBookDetails>
       </LastReadCard>
