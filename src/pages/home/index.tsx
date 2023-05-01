@@ -11,11 +11,12 @@ import { HomeContainer, MyBooks } from './styles'
 import { formatTimeFromNow } from '@/utils/format-time-from-now'
 import { useQuery } from '@tanstack/react-query'
 
-export interface Rating {
+export interface IRating {
   id: string
   rate: number
   created_at: string
   book: {
+    id: string
     name: string
     author: string
     summary: string
@@ -27,7 +28,7 @@ export interface Rating {
   }
 }
 
-export interface PopularBook {
+export interface IPopularBook {
   id: string
   author: string
   cover_url: string
@@ -36,7 +37,7 @@ export interface PopularBook {
   rate: number
 }
 
-export interface LastReadBook {
+export interface ILastReadBook {
   id: string
   rate: number
   created_at: string
@@ -54,17 +55,18 @@ export default function Home() {
   const isSignedIn = session.status === 'authenticated'
   const userId = session.data?.user.id
 
-  const { data: ratings, isLoading: isRatingsLoading } = useQuery<Rating[]>(
+  const { data: ratings, isLoading: isRatingsLoading } = useQuery<IRating[]>(
     ['ratings'],
     async () => {
       const response = await api.get('/ratings')
 
-      const data = response.data.map((rating: Rating) => {
+      const data = response.data.map((rating: IRating) => {
         return {
           id: rating.id,
           rate: rating.rate,
           created_at: formatTimeFromNow(rating.created_at),
           book: {
+            id: rating.book.id,
             name: rating.book.name,
             author: rating.book.author,
             summary: rating.book.summary,
@@ -82,7 +84,7 @@ export default function Home() {
   )
 
   const { data: popularBooks, isLoading: isPopularLoading } = useQuery<
-    PopularBook[]
+    IPopularBook[]
   >(['popular'], async () => {
     const response = await api.get('/books/popular')
 
@@ -90,7 +92,7 @@ export default function Home() {
   })
 
   const { data: lastRead, isLoading: isLastReadLoading } =
-    useQuery<LastReadBook>(['last-read', userId], async () => {
+    useQuery<ILastReadBook>(['last-read', userId], async () => {
       const response = await api.get(`/profile/${userId}`)
 
       const book = {
