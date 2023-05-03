@@ -1,7 +1,7 @@
 import { Ratings } from '@/components/Ratings'
 import { UserAvatar } from '@/components/UserAvatar'
 
-import { Rating as RatingInfos } from '..'
+import { IRating } from '..'
 
 import {
   RecentReviewsContainer,
@@ -11,19 +11,27 @@ import {
   ReviewUser,
 } from './styles'
 import Image from 'next/image'
+import { useDetailedBookDialog } from '@/hooks/useDetailedBookDialog'
 
 interface RecentReviewsProps {
-  ratings?: RatingInfos[]
+  ratings?: IRating[]
 }
 
 export function RecentReviews({ ratings }: RecentReviewsProps) {
+  const { DetailedBookDialog, showDialog } = useDetailedBookDialog()
+
   return (
     <RecentReviewsContainer>
       <h4>Avaliações mais recentes</h4>
 
+      <DetailedBookDialog />
+
       <div>
         {ratings?.map((rating) => (
-          <ReviewCard key={rating.id}>
+          <ReviewCard
+            key={rating.id}
+            onClick={() => showDialog(rating.book.id)}
+          >
             <ReviewCardHeader>
               <ReviewUser>
                 <UserAvatar src={rating.user.avatar_url} size="md" />

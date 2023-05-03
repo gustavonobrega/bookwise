@@ -6,10 +6,10 @@ import {
   TrendingBooksContent,
   TrendingBooksHeader,
 } from './styles'
-import { PopularBook } from '..'
+import { IPopularBook } from '..'
 
 interface TrendingBooksProps {
-  popularBooks?: PopularBook[]
+  popularBooks?: IPopularBook[]
 }
 
 export function TrendingBooks({ popularBooks }: TrendingBooksProps) {

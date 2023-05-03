@@ -10,11 +10,11 @@ import {
   LastReadHeader,
   MainInfo,
 } from './styles'
-import { LastReadBook } from '..'
+import { ILastReadBook } from '..'
 import Image from 'next/image'
 
 interface LastReadProps {
-  lastRead?: LastReadBook
+  lastRead?: ILastReadBook
 }
 
 export function LastRead({ lastRead }: LastReadProps) {
