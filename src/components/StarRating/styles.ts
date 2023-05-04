@@ -11,6 +11,6 @@ export const RateContainer = styled('div', {
   },
 
   'input[type=radio]': {
-    all: 'unset',
+    display: 'none',
   },
 })

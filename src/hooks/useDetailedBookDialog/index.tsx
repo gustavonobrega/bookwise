@@ -1,6 +1,22 @@
 import * as Dialog from '@radix-ui/react-dialog'
+import { useEffect, useState } from 'react'
 import Image from 'next/image'
+import { useQuery } from '@tanstack/react-query'
+import { useForm, FormProvider } from 'react-hook-form'
+import { z } from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { BookOpen, BookmarkSimple, Check, X } from 'phosphor-react'
+import { useSession } from 'next-auth/react'
+import { AxiosError } from 'axios'
+
+import { formatTimeFromNow } from '@/utils/format-time-from-now'
+import { api } from '@/lib/axios'
+
+import { Ratings } from '../../components/Ratings'
+import { UserAvatar } from '../../components/UserAvatar'
+import { SignInDialog } from '@/components/SignInDialog'
+import { BookDialogShimmer } from '@/components/Shimmers/BookDialogShimmer'
+import { StarRating } from '@/components/StarRating'
 
 import {
   DialogOverlay,
@@ -21,16 +37,6 @@ import {
   RateFormHeader,
   RateFormButtons,
 } from './styles'
-import { useEffect, useState } from 'react'
-import { Ratings } from '../../components/Ratings'
-import { UserAvatar } from '../../components/UserAvatar'
-import { useQuery } from '@tanstack/react-query'
-import { api } from '@/lib/axios'
-import { formatTimeFromNow } from '@/utils/format-time-from-now'
-import { useSession } from 'next-auth/react'
-import { SignInDialog } from '@/components/SignInDialog'
-import { BookDialogShimmer } from '@/components/Shimmers/BookDialogShimmer'
-import { StarRating } from '@/components/StarRating'
 
 interface IBookDetails {
   author: string
@@ -60,6 +66,17 @@ interface IBookDetails {
   }[]
 }
 
+const createRatingFormSchema = z.object({
+  rate: z
+    .string()
+    .min(1)
+    .max(5)
+    .transform((rate) => parseInt(rate)),
+  description: z.string().min(1).max(490),
+})
+
+type createRatingFormData = z.infer<typeof createRatingFormSchema>
+
 export function useDetailedBookDialog() {
   const [isOpen, setIsOpen] = useState(false)
   const [bookId, setBookId] = useState('')
@@ -70,13 +87,11 @@ export function useDetailedBookDialog() {
     setIsOpen(true)
   }
 
-  useEffect(() => {
-    if (isOpen === false) {
-      setIsRating(false)
-    }
-  }, [isRating, isOpen])
-
-  const { data: book, isLoading } = useQuery<IBookDetails>(
+  const {
+    data: book,
+    isLoading,
+    refetch,
+  } = useQuery<IBookDetails>(
     ['detailed-book', bookId],
     async () => {
       const response = await api.get(`/books/${bookId}`)
@@ -106,6 +121,46 @@ export function useDetailedBookDialog() {
   const isAlreadyRated = book?.ratings.some(
     (rating) => rating.user.id === session.data?.user.id,
   )
+
+  const newRatingForm = useForm<createRatingFormData>({
+    resolver: zodResolver(createRatingFormSchema),
+  })
+
+  const { register, handleSubmit, resetField } = newRatingForm
+
+  async function handleCreateRating(data: createRatingFormData) {
+    try {
+      await api.post('/ratings', {
+        rate: data.rate,
+        description: data.description,
+        book_id: bookId,
+        user_id: session.data?.user.id,
+      })
+
+      refetch()
+      setIsRating(false)
+    } catch (err) {
+      if (err instanceof AxiosError && err?.response?.data?.message) {
+        alert(err.response.data.message)
+        return
+      }
+
+      console.log(err)
+    }
+  }
+
+  function handleCloseRatingForm() {
+    setIsRating(false)
+
+    resetField('description')
+  }
+
+  useEffect(() => {
+    if (isOpen === false) {
+      setIsRating(false)
+      resetField('description')
+    }
+  }, [isRating, isOpen, resetField])
 
   const DetailedBookDialog = () => {
     return (
@@ -190,7 +245,7 @@ export function useDetailedBookDialog() {
                   </BookRatingsHeader>
 
                   {isRating && (
-                    <RateForm>
+                    <RateForm onSubmit={handleSubmit(handleCreateRating)}>
                       <RateFormHeader>
                         <UserAvatar
                           src={session.data!.user.avatar_url}
@@ -199,20 +254,23 @@ export function useDetailedBookDialog() {
 
                         <strong>{session.data?.user.name}</strong>
 
-                        <StarRating />
+                        <FormProvider {...newRatingForm}>
+                          <StarRating />
+                        </FormProvider>
                       </RateFormHeader>
 
                       <textarea
+                        {...register('description')}
                         maxLength={450}
                         placeholder="Escreva sua avaliação"
                       />
 
                       <RateFormButtons>
-                        <button>
+                        <button type="button" onClick={handleCloseRatingForm}>
                           <X size={24} />
                         </button>
 
-                        <button>
+                        <button type="submit">
                           <Check size={24} />
                         </button>
                       </RateFormButtons>
