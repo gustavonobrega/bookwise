@@ -24,7 +24,7 @@ export function TrendingBooks({ popularBooks }: TrendingBooksProps) {
 
       <TrendingBooksContent>
         {popularBooks?.map((popular) => (
-          <BookCard size="sm" key={popular.id} popularBook={popular} />
+          <BookCard size="sm" key={popular.id} book={popular} />
         ))}
       </TrendingBooksContent>
     </TrendingBooksContainer>

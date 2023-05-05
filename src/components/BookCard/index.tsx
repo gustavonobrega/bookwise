@@ -1,11 +1,11 @@
-import { PopularBook } from '@/pages/home'
+import { IPopularBook } from '@/pages/home'
 import { Ratings } from '../Ratings'
 import { BookCardContainer, BookInfo } from './styles'
 import Image from 'next/image'
 
 interface BookCardProps {
   size: 'sm' | 'md' | 'lg'
-  popularBook: PopularBook
+  book: IPopularBook
   description?: string
 }
 
@@ -24,22 +24,22 @@ const sizes = {
   },
 }
 
-export function BookCard({ size, popularBook, description }: BookCardProps) {
+export function BookCard({ size, book, description }: BookCardProps) {
   return (
     <BookCardContainer>
       <div>
         <Image
           width={`${sizes[size].width}`}
           height={`${sizes[size].height}`}
-          src={popularBook.cover_url}
-          alt={popularBook.name}
+          src={book.cover_url}
+          alt={book.name}
         />
 
         <BookInfo isSmall={size === 'sm'}>
-          <strong>{popularBook.name}</strong>
-          <span>{popularBook.author}</span>
+          <strong>{book.name}</strong>
+          <span>{book.author}</span>
 
-          <Ratings size={16} rate={popularBook.rate} />
+          <Ratings size={16} rate={book.rate} />
         </BookInfo>
       </div>
 
