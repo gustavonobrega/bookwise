@@ -1,6 +1,6 @@
 import { styled } from '@/styles/stitches.config'
 
-export const SearchInputContainer = styled('div', {
+export const SearchInputContainer = styled('form', {
   border: '1px solid $gray500',
   borderRadius: '$sm',
   padding: '0.875rem 1.25rem',
