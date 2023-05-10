@@ -37,6 +37,7 @@ import {
   RateFormHeader,
   RateFormButtons,
 } from './styles'
+import { useRouter } from 'next/router'
 
 interface IBookDetails {
   author: string
@@ -162,6 +163,16 @@ export function useDetailedBookDialog() {
     }
   }, [isRating, isOpen, resetField])
 
+  const router = useRouter()
+
+  async function handleClickUserRating(id: string) {
+    if (!isAuthenticated) {
+      return
+    }
+
+    await router.push(`/profile/${id}`)
+  }
+
   const DetailedBookDialog = () => {
     return (
       <Dialog.Root open={isOpen} onOpenChange={setIsOpen}>
@@ -282,6 +293,10 @@ export function useDetailedBookDialog() {
                       <RatingCard
                         key={ratingBook.id}
                         isRated={ratingBook.user.id === session.data?.user.id}
+                        notAuthenticated={!isAuthenticated}
+                        onClick={() =>
+                          handleClickUserRating(ratingBook.user.id)
+                        }
                       >
                         <RatingCardHeader>
                           <RatingCardUser>

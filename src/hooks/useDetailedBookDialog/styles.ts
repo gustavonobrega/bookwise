@@ -199,6 +199,15 @@ export const RatingCard = styled('div', {
         background: '$gray600',
       },
     },
+    notAuthenticated: {
+      true: {
+        cursor: 'default',
+
+        '&:hover': {
+          borderColor: '$gray700',
+        },
+      },
+    },
   },
 })
 
