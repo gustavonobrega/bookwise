@@ -35,7 +35,7 @@ export function BookCard({ size, book, description }: BookCardProps) {
           alt={book.name}
         />
 
-        <BookInfo isSmall={size === 'sm'}>
+        <BookInfo isSmall={size === 'sm'} isLarge={size === 'lg'}>
           <strong>{book.name}</strong>
           <span>{book.author}</span>
 

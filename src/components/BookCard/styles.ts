@@ -59,5 +59,12 @@ export const BookInfo = styled('div', {
         },
       },
     },
+    isLarge: {
+      true: {
+        strong: {
+          fontSize: '$lg',
+        },
+      },
+    },
   },
 })
