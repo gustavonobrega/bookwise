@@ -17,6 +17,7 @@ export function Sidebar() {
 
   const isLoading = session.status === 'loading'
   const isSignedIn = session.status === 'authenticated'
+  const { id } = router.query
 
   if (isLoading) {
     return <SidebarShimmer />
@@ -36,7 +37,13 @@ export function Sidebar() {
           <strong>Explorar</strong>
         </NavItem>
         {isSignedIn && (
-          <NavItem href="/profile" isActive={router.asPath === '/profile'}>
+          <NavItem
+            href={`/profile/${session.data.user.id}`}
+            isActive={
+              router.asPath === `/profile/${session.data.user.id}` ||
+              router.asPath === `/profile/${id}`
+            }
+          >
             <User size={24} />
             <strong>Perfil</strong>
           </NavItem>
