@@ -1,9 +1,13 @@
 import { useRouter } from 'next/router'
 import { Binoculars, ChartLineUp, User } from 'phosphor-react'
 import { HeaderContainer } from './styles'
+import { useSession } from 'next-auth/react'
 
 export function Header() {
   const router = useRouter()
+  const session = useSession()
+
+  const { id } = router.query
 
   if (router.asPath === '/explore') {
     return (
@@ -16,7 +20,10 @@ export function Header() {
     )
   }
 
-  if (router.asPath === '/profile') {
+  if (
+    router.asPath === `/profile/${session?.data?.user.id}` ||
+    router.asPath === `/profile/${id}`
+  ) {
     return (
       <HeaderContainer>
         <div>
