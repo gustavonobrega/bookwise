@@ -1,13 +1,15 @@
 import { useRouter } from 'next/router'
-import { Binoculars, ChartLineUp, User } from 'phosphor-react'
+import { Binoculars, CaretLeft, ChartLineUp, User } from 'phosphor-react'
 import { HeaderContainer } from './styles'
 import { useSession } from 'next-auth/react'
+import { CustomLink } from '../CustomLink'
 
 export function Header() {
   const router = useRouter()
   const session = useSession()
 
   const { id } = router.query
+  const loggedUser = session?.data?.user.id === id
 
   if (router.asPath === '/explore') {
     return (
@@ -27,8 +29,17 @@ export function Header() {
     return (
       <HeaderContainer>
         <div>
-          <User size={32} />
-          <h1>Perfil</h1>
+          {loggedUser ? (
+            <>
+              <User size={32} />
+              <h1>Perfil</h1>
+            </>
+          ) : (
+            <CustomLink href="/" variant="secondary">
+              Voltar
+              <CaretLeft size={20} color="#F8F9FC" />
+            </CustomLink>
+          )}
         </div>
       </HeaderContainer>
     )
