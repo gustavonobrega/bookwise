@@ -1,5 +1,5 @@
 import { GetStaticProps } from 'next'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 import { prisma } from '@/lib/prisma'
 import { api } from '@/lib/axios'
@@ -10,7 +10,7 @@ import { IPopularBook } from '../home'
 
 import {
   Books,
-  Categorie,
+  Category,
   Categories,
   ExploreContainer,
   ExploreContent,
@@ -38,36 +38,37 @@ interface ExploreProps {
 }
 
 export default function Explore({ books, categories }: ExploreProps) {
-  const [selectedCategorie, setSelectedCategory] = useState('')
-  const [searchInput, setSearchInput] = useState('')
+  const [selectedCategory, setSelectedCategory] = useState('Tudo')
   const [filteredBooks, setFilteredBooks] = useState<IBooks[]>([])
 
   function handleSearchInput(input: string) {
-    setSelectedCategory('')
-    setSearchInput(input)
+    if (input.length > 0) {
+      setSelectedCategory('')
+
+      const filterByInput = books.filter(
+        (book) =>
+          book.name.toLocaleLowerCase().includes(input.toLocaleLowerCase()) ||
+          book.author.toLocaleLowerCase().includes(input.toLocaleLowerCase()),
+      )
+
+      setFilteredBooks(filterByInput)
+    }
   }
 
-  useEffect(() => {
-    if (selectedCategorie !== '') {
+  function handleFilterByCategory(category: string) {
+    setSelectedCategory(category)
+
+    if (category === 'Tudo') {
+      setFilteredBooks([])
+    } else {
       const filterBooksByCat = books.filter((book) =>
         book.categories.some(
-          (category) => category.category.name === selectedCategorie,
+          (filterCategory) => filterCategory.category.name === category,
         ),
       )
       setFilteredBooks(filterBooksByCat)
-      setSearchInput('')
-    } else if (searchInput !== '') {
-      const filterByInput = books.filter(
-        (book) =>
-          book.name.toLocaleLowerCase().includes(searchInput) ||
-          book.author.toLocaleLowerCase().includes(searchInput),
-      )
-      setFilteredBooks(filterByInput)
-      setSelectedCategory('')
-    } else {
-      setFilteredBooks([])
     }
-  }, [selectedCategorie, books, searchInput])
+  }
 
   return (
     <ExploreContainer>
@@ -78,22 +79,22 @@ export default function Explore({ books, categories }: ExploreProps) {
 
       <ExploreContent>
         <Categories>
-          <Categorie
-            isActive={selectedCategorie === ''}
-            disabled={selectedCategorie === ''}
-            onClick={() => setSelectedCategory('')}
+          <Category
+            isActive={selectedCategory === 'Tudo'}
+            disabled={selectedCategory === 'Tudo'}
+            onClick={() => handleFilterByCategory('Tudo')}
           >
             Tudo
-          </Categorie>
-          {categories.map((categorie) => (
-            <Categorie
-              key={categorie.id}
-              isActive={categorie.name === selectedCategorie}
-              disabled={categorie.name === selectedCategorie}
-              onClick={() => setSelectedCategory(categorie.name)}
+          </Category>
+          {categories.map((category) => (
+            <Category
+              key={category.id}
+              isActive={category.name === selectedCategory}
+              disabled={category.name === selectedCategory}
+              onClick={() => handleFilterByCategory(category.name)}
             >
-              {categorie.name}
-            </Categorie>
+              {category.name}
+            </Category>
           ))}
         </Categories>
 

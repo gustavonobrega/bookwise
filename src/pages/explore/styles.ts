@@ -26,7 +26,7 @@ export const Categories = styled('ul', {
   },
 })
 
-export const Categorie = styled('button', {
+export const Category = styled('button', {
   padding: '4px 16px',
   border: '1px solid $purple100',
   borderRadius: '$full',
