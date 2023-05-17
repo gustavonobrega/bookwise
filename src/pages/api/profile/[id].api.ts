@@ -15,11 +15,11 @@ export default async function handler(
 
   const id = String(req.query.id)
 
-  if (session?.user.id !== id) {
+  if (!session) {
     return res.status(401).end()
   }
 
-  const userLastRead = await prisma.user.findUnique({
+  const profile = await prisma.user.findUnique({
     where: {
       id,
     },
@@ -29,11 +29,19 @@ export default async function handler(
           created_at: 'desc',
         },
         include: {
-          book: true,
+          book: {
+            include: {
+              categories: {
+                select: {
+                  category: true,
+                },
+              },
+            },
+          },
         },
       },
     },
   })
 
-  return res.json(userLastRead)
+  return res.json(profile)
 }
