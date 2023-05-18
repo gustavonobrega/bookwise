@@ -15,6 +15,7 @@ import {
   ExploreContainer,
   ExploreContent,
 } from './styles'
+import { useDetailedBookDialog } from '@/hooks/useDetailedBookDialog'
 
 interface IBooks extends IPopularBook {
   categories: [
@@ -40,6 +41,12 @@ interface ExploreProps {
 export default function Explore({ books, categories }: ExploreProps) {
   const [selectedCategory, setSelectedCategory] = useState('Tudo')
   const [filteredBooks, setFilteredBooks] = useState<IBooks[]>([])
+
+  const { showDialog, DetailedBookDialog } = useDetailedBookDialog()
+
+  function handleShowDialog(id: string) {
+    showDialog(id)
+  }
 
   function handleSearchInput(input: string) {
     if (input.length > 0) {
@@ -98,17 +105,29 @@ export default function Explore({ books, categories }: ExploreProps) {
           ))}
         </Categories>
 
+        <DetailedBookDialog />
+
         <Books>
           {filteredBooks.length > 0 ? (
             <>
               {filteredBooks.map((book) => (
-                <BookCard key={book.id} size="md" book={book} />
+                <BookCard
+                  key={book.id}
+                  size="md"
+                  book={book}
+                  handleShowDialog={handleShowDialog}
+                />
               ))}
             </>
           ) : (
             <>
               {books.map((book) => (
-                <BookCard key={book.id} size="md" book={book} />
+                <BookCard
+                  key={book.id}
+                  size="md"
+                  book={book}
+                  handleShowDialog={handleShowDialog}
+                />
               ))}
             </>
           )}
