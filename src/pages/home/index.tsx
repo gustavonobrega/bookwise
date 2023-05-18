@@ -42,6 +42,7 @@ export interface ILastReadBook {
   rate: number
   created_at: string
   book: {
+    id: string
     name: string
     author: string
     summary: string
@@ -107,7 +108,7 @@ export default function Home() {
     <HomeContainer>
       <MyBooks>
         {isSignedIn && !isLastReadLoading && lastRead && (
-          <LastRead lastRead={lastRead} />
+          <LastRead lastRead={lastRead} userId={userId} />
         )}
         {isRatingsLoading ? (
           <RecentReviewsShimmer />

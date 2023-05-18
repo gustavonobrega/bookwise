@@ -12,22 +12,28 @@ import {
 } from './styles'
 import { ILastReadBook } from '..'
 import Image from 'next/image'
+import { useDetailedBookDialog } from '@/hooks/useDetailedBookDialog'
 
 interface LastReadProps {
   lastRead?: ILastReadBook
+  userId: string | undefined
 }
 
-export function LastRead({ lastRead }: LastReadProps) {
+export function LastRead({ lastRead, userId }: LastReadProps) {
+  const { DetailedBookDialog, showDialog } = useDetailedBookDialog()
+
   return (
     <LastReadContainer>
       <LastReadHeader>
         <h4>Sua última leitura</h4>
-        <CustomLink href="/profile" icon={<CaretRight size={16} />}>
+        <CustomLink href={`/profile/${userId}`} icon={<CaretRight size={16} />}>
           Ver todas
         </CustomLink>
       </LastReadHeader>
 
-      <LastReadCard>
+      <DetailedBookDialog />
+
+      <LastReadCard onClick={() => showDialog(lastRead!.book.id)}>
         <Image
           src={lastRead!.book.cover_url}
           alt={lastRead!.book.name}

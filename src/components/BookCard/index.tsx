@@ -7,6 +7,7 @@ interface BookCardProps {
   size: 'sm' | 'md' | 'lg'
   book: IPopularBook
   description?: string
+  handleShowDialog?: (id: string) => void
 }
 
 const sizes = {
@@ -24,9 +25,14 @@ const sizes = {
   },
 }
 
-export function BookCard({ size, book, description }: BookCardProps) {
+export function BookCard({
+  size,
+  book,
+  description,
+  handleShowDialog,
+}: BookCardProps) {
   return (
-    <BookCardContainer>
+    <BookCardContainer onClick={() => handleShowDialog!(book.id)}>
       <div>
         <Image
           width={`${sizes[size].width}`}
